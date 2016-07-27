@@ -1,5 +1,14 @@
 # Changelog
 
+### v1.3.0
+
+* Added evolutions page
+* Added ATK, DEF, and DPS to the spreadsheet
+* .crt file is now generated automatically upon starting the program
+* Fixed bug that caused accounts to become irreparably merged
+* Fixed transferred Pokemon bug
+* Implemented toggleable columns
+
 ### v1.2.2
 
 * Small styling changes
