@@ -22,7 +22,6 @@ brew install --devel protobuf
 git clone https://github.com/justinleewells/pogo-optimizer
 cd pogo-optimizer
 npm install
-npm run install-libs
 npm start
 ```
 
@@ -81,6 +80,8 @@ A prebuilt Docker image has been created for this repo. You can pull and start i
 ```bash
 $ docker run -d -p 3000:3000 -p 8081:8081 -it justinleewells/pogo-optimizer
 ```
+
+If there have been updates to the repo, run `docker pull justinleewells/pogo-optimizer` before you do `docker run -d -p 3000:3000 -p 8081:8081 -it justinleewells/pogo-optimizer`
 
 All ports are not accessible and usable as described above.
 

@@ -16,11 +16,6 @@ var releasing = null;
 
 if (!fs.existsSync(__dirname + '/data/save/')) fs.mkdirSync(__dirname + '/data/save/');
 
-if (!fs.existsSync(__dirname + '/.htt-mitm-proxy/certs/ca.crt')) {
-  var cert = forge.pki.certificateFromPem(fs.readFileSync('.http-mitm-proxy/certs/ca.pem'));
-  fs.writeFile('.http-mitm-proxy/certs/ca.crt', forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes(), {encoding: 'binary'});
-}
-
 /**
  * Mitm
  */
@@ -48,7 +43,7 @@ new PokemonGoMITM({port: 8081})
       }, []);
       var candy = _.reduce(delta.inventory_items, function (result, item) {
         return (item.inventory_item_data !== undefined &&
-                item.inventory_item_data.pokemon_family !== undefined) ? _.concat(result, item.inventory_item_data.pokemon_family) : result;
+                item.inventory_item_data.candy !== undefined) ? _.concat(result, item.inventory_item_data.candy) : result;
       }, []);
       if (inventory === null) {
         inventory = new Inventory(player.username);
@@ -127,7 +122,22 @@ app.post('/api/logout', function (req, res, next) {
 app.listen(3000, function () {
   console.log('Pokemon GO Optimizer front-end listening on port 3000');
 
-  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-    console.log('Accept the cert at ' + add + ':3000/ca.pem if you haven\'t already done so');
-  });
+  var ip = require('quick-local-ip').getLocalIP4();
+  console.log('Accept the cert at http://' + ip + ':3000/ca.pem if you haven\'t already done so');
 });
+
+/**
+ * Certificate
+ */
+
+function createCrt() {
+  if (fs.existsSync(__dirname + '/.http-mitm-proxy/certs/ca.pem')) {
+    if (!fs.existsSync(__dirname + '/.http-mitm-proxy/certs/ca.crt')) {
+      var cert = forge.pki.certificateFromPem(fs.readFileSync('.http-mitm-proxy/certs/ca.pem'));
+      fs.writeFile('.http-mitm-proxy/certs/ca.crt', forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes(), {encoding: 'binary'});
+    }
+  } else {
+    setTimeout(createCrt, 15000);
+  }
+}
+createCrt();
